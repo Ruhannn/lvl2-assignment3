@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import config from "../config";
-const JWT_token = config.jwt_secret as string;
-
+const JWT_token = config.jwt_secret as string ;
+if (!JWT_token) {
+  throw new Error("jwt token not found");
+}
 export const authenticate = (
   req: Request,
   res: Response,

@@ -3,6 +3,9 @@ import jwt from "jsonwebtoken";
 import User from "../models/User";
 import config from "../config";
 const JWT_token = config.jwt_secret as string;
+if (!JWT_token) {
+  throw new Error("jwt token not found");
+}
 // user sign up
 export const signup = async (req: Request, res: Response) => {
   try {
