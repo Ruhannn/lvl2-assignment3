@@ -97,10 +97,15 @@ export const getAllBookings = async (req: Request, res: Response) => {
 // get user's bookings
 export const getUserBookings = async (req: Request, res: Response) => {
   try {
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     const userId = (req as any).user._id;
-    const bookings = await Booking.find({ user: userId })
+    const bookings = await Booking.find({
+      user: userId,
+    })
+      .select("-user")
       .populate("slots")
       .populate("room");
+
     res.status(200).json(handleNoDataFound(bookings, "User bookings"));
   } catch (error) {
     res.status(400).json({

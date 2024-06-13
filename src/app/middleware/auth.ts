@@ -27,10 +27,10 @@ export const authenticate = async (
       return res.status(401).json({
         success: false,
         statusCode: 401,
-        message: "You have no access to this route",
+        message: "user not found",
       });
     }
-
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     (req as any).user = user;
     next();
   } catch (error) {

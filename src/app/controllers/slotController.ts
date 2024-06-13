@@ -62,8 +62,8 @@ export const createSlots = async (req: Request, res: Response) => {
 export const getAvailableSlots = async (req: Request, res: Response) => {
   try {
     const { date, roomId } = req.query;
-
-    let filter: any = { isBooked: false };
+    // TODO: add "isDeleted": false is rooms
+    const filter: any = { isBooked: false };
     if (date) filter.date = date;
     if (roomId) filter.room = roomId;
 
