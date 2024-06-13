@@ -6,7 +6,8 @@ import {
   updateRoom,
   deleteRoom,
 } from "../controllers/roomController";
-import { authenticate, isAdmin } from "../middleware/auth";
+import { authenticate,  } from "../middleware/auth";
+import { isAdmin } from "../middleware/isAdmin";
 
 const router = Router();
 

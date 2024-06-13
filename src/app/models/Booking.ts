@@ -1,20 +1,27 @@
 import { Schema, model, Document } from "mongoose";
-import { ObjectId } from "mongodb";
 
 interface IBooking extends Document {
-  room: ObjectId;
-  slots: ObjectId[];
-  user: ObjectId;
+  date: Date;
+  slots: Schema.Types.ObjectId[];
+  room: Schema.Types.ObjectId; 
+  user: Schema.Types.ObjectId;
   totalAmount: number;
-  isConfirmed: boolean;
+  isConfirmed: string;
+  isDeleted: boolean;
 }
 
 const BookingSchema = new Schema<IBooking>({
-  room: { type: Schema.Types.ObjectId, ref: "Room", required: true },
+  date: { type: Date, required: true },
   slots: [{ type: Schema.Types.ObjectId, ref: "Slot", required: true }],
+  room: { type: Schema.Types.ObjectId, ref: "Room", required: true },
   user: { type: Schema.Types.ObjectId, ref: "User", required: true },
   totalAmount: { type: Number, required: true },
-  isConfirmed: { type: Boolean, default: false },
+  isConfirmed: {
+    type: String,
+    enum: ["confirmed", "unconfirmed"],
+    default: "unconfirmed",
+  },
+  isDeleted: { type: Boolean, default: false },
 });
 
 const Booking = model<IBooking>("Booking", BookingSchema);

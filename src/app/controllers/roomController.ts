@@ -1,11 +1,21 @@
 import { Request, Response } from "express";
 import Room from "../models/Room";
+import handleNoDataFound from "../middleware/handleNoDataFound";
+import { roomValidationSchema } from "../validation/validation";
 
-// Create Room
+// create room
 export const createRoom = async (req: Request, res: Response) => {
   try {
     const { name, roomNo, floorNo, capacity, pricePerSlot, amenities } =
       req.body;
+    const validationResult = roomValidationSchema.safeParse(req.body);
+    if (!validationResult.success) {
+      return res.status(400).json({
+        success: false,
+        statusCode: 400,
+        message: validationResult.error.errors,
+      });
+    }
     const room = new Room({
       name,
       roomNo,
@@ -23,17 +33,15 @@ export const createRoom = async (req: Request, res: Response) => {
       data: room,
     });
   } catch (error) {
-    res
-      .status(400)
-      .json({
-        success: false,
-        statusCode: 400,
-        message: (error as Error).message,
-      });
+    res.status(400).json({
+      success: false,
+      statusCode: 400,
+      message: (error as Error).message,
+    });
   }
 };
 
-// Get a Room
+// get a room
 export const getRoom = async (req: Request, res: Response) => {
   try {
     const room = await Room.findById(req.params.id);
@@ -51,13 +59,11 @@ export const getRoom = async (req: Request, res: Response) => {
       data: room,
     });
   } catch (error) {
-    res
-      .status(400)
-      .json({
-        success: false,
-        statusCode: 400,
-        message: (error as Error).message,
-      });
+    res.status(400).json({
+      success: false,
+      statusCode: 400,
+      message: (error as Error).message,
+    });
   }
 };
 
@@ -66,24 +72,17 @@ export const getAllRooms = async (req: Request, res: Response) => {
   try {
     const rooms = await Room.find({ isDeleted: false });
 
-    res.status(200).json({
-      success: true,
-      statusCode: 200,
-      message: "Rooms retrieved successfully",
-      data: rooms,
-    });
+    res.status(200).json(handleNoDataFound(rooms, "Rooms"));
   } catch (error) {
-    res
-      .status(400)
-      .json({
-        success: false,
-        statusCode: 400,
-        message: (error as Error).message,
-      });
+    res.status(400).json({
+      success: false,
+      statusCode: 400,
+      message: (error as Error).message,
+    });
   }
 };
 
-// Update Room
+// update room
 export const updateRoom = async (req: Request, res: Response) => {
   try {
     const room = await Room.findByIdAndUpdate(req.params.id, req.body, {
@@ -103,17 +102,15 @@ export const updateRoom = async (req: Request, res: Response) => {
       data: room,
     });
   } catch (error) {
-    res
-      .status(400)
-      .json({
-        success: false,
-        statusCode: 400,
-        message: (error as Error).message,
-      });
+    res.status(400).json({
+      success: false,
+      statusCode: 400,
+      message: (error as Error).message,
+    });
   }
 };
 
-// Delete Room 
+// delete room
 export const deleteRoom = async (req: Request, res: Response) => {
   try {
     const room = await Room.findByIdAndUpdate(
@@ -135,12 +132,10 @@ export const deleteRoom = async (req: Request, res: Response) => {
       data: room,
     });
   } catch (error) {
-    res
-      .status(400)
-      .json({
-        success: false,
-        statusCode: 400,
-        message: (error as Error).message,
-      });
+    res.status(400).json({
+      success: false,
+      statusCode: 400,
+      message: (error as Error).message,
+    });
   }
 };

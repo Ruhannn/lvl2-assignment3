@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import User from "../models/User";
 import config from "../config";
+import { userValidationSchema } from "../validation/validation";
 const JWT_token = config.jwt_secret as string;
 if (!JWT_token) {
   throw new Error("jwt token not found");
@@ -10,6 +11,15 @@ if (!JWT_token) {
 export const signup = async (req: Request, res: Response) => {
   try {
     const { name, email, password, phone, address, role } = req.body;
+    const validationResult = userValidationSchema.safeParse(req.body);
+    if (!validationResult.success) {
+      return res.status(400).json({
+        success: false,
+        statusCode: 400,
+        message: validationResult.error.errors,
+      });
+    }
+
     const user = new User({ name, email, password, phone, address, role });
     await user.save();
 
